@@ -1,7 +1,12 @@
-// pages/index.js
 import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
   return (
     <div style={{
       flex: 1,
@@ -12,7 +17,10 @@ export default function Home() {
       padding: '2rem 1.5rem',
       textAlign: 'center',
       maxWidth: '700px',
-      margin: '0 auto'
+      margin: '0 auto',
+      opacity: loaded ? 1 : 0,
+      transform: loaded ? 'translateY(0)' : 'translateY(10px)',
+      transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
     }}>
       {/* Заголовок */}
       <h1 style={{
@@ -22,7 +30,11 @@ export default function Home() {
         background: 'linear-gradient(to right, #ff2a2a, #ff5555)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text'
+        backgroundClip: 'text',
+        opacity: loaded ? 1 : 0,
+        transform: loaded ? 'translateY(0)' : 'translateY(-10px)',
+        transition: 'transform 0.7s ease-out, opacity 0.7s ease-out',
+        transitionDelay: '0.1s',
       }}>
         DEATHRUN
       </h1>
@@ -32,9 +44,13 @@ export default function Home() {
         color: '#aaa',
         fontSize: '1.2rem',
         marginBottom: '2.5rem',
-        lineHeight: 1.6
+        lineHeight: 1.6,
+        opacity: loaded ? 1 : 0,
+        transform: loaded ? 'translateY(0)' : 'translateY(10px)',
+        transition: 'transform 0.7s ease-out, opacity 0.7s ease-out',
+        transitionDelay: '0.2s',
       }}>
-        Чистый, быстрый, без компромиссов.  
+        Чистый, быстрый, без компромиссов.<br />
         Беги. Умирай. Повторяй.
       </p>
 
@@ -46,7 +62,11 @@ export default function Home() {
         borderRadius: '8px',
         fontSize: '1.2rem',
         fontFamily: 'monospace',
-        letterSpacing: '1px'
+        letterSpacing: '1px',
+        opacity: loaded ? 1 : 0,
+        transform: loaded ? 'translateY(0)' : 'translateY(10px)',
+        transition: 'transform 0.7s ease-out, opacity 0.7s ease-out',
+        transitionDelay: '0.3s',
       }}>
         dr.yourserver.com:27015
       </div>
@@ -62,16 +82,21 @@ export default function Home() {
           borderRadius: '6px',
           fontWeight: 600,
           fontSize: '1.1rem',
-          transition: 'background 0.25s ease, transform 0.15s ease',
-          boxShadow: '0 4px 12px rgba(255, 42, 42, 0.25)'
+          transition: 'background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease',
+          boxShadow: '0 4px 12px rgba(255, 42, 42, 0.25)',
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? 'translateY(0)' : 'translateY(10px)',
+          transitionDelay: '0.4s',
         }}
         onMouseEnter={(e) => {
           e.target.style.background = '#ff0000';
           e.target.style.transform = 'translateY(-2px)';
+          e.target.style.boxShadow = '0 6px 16px rgba(255, 42, 42, 0.35)';
         }}
         onMouseLeave={(e) => {
           e.target.style.background = '#ff2a2a';
           e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 4px 12px rgba(255, 42, 42, 0.25)';
         }}
       >
         Подключиться
@@ -85,12 +110,24 @@ export default function Home() {
         flexWrap: 'wrap',
         justifyContent: 'center',
         fontSize: '0.95rem',
-        color: '#777'
+        color: '#777',
+        opacity: loaded ? 1 : 0,
+        transform: loaded ? 'translateY(0)' : 'translateY(10px)',
+        transition: 'transform 0.7s ease-out, opacity 0.7s ease-out',
+        transitionDelay: '0.5s',
       }}>
-        <a href="/rules">Правила</a>
-        <a href="/stats">Статистика</a>
-        <a href="/maps">Карты</a>
-        <a href="/staff">Команда</a>
+        <a href="/rules" style={{ transition: 'color 0.25s ease' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#777'}>
+          Правила
+        </a>
+        <a href="/stats" style={{ transition: 'color 0.25s ease' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#777'}>
+          Статистика
+        </a>
+        <a href="/maps" style={{ transition: 'color 0.25s ease' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#777'}>
+          Карты
+        </a>
+        <a href="/staff" style={{ transition: 'color 0.25s ease' }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#777'}>
+          Команда
+        </a>
       </nav>
 
       {/* Footer */}
@@ -100,7 +137,10 @@ export default function Home() {
         width: '100%',
         textAlign: 'center',
         fontSize: '0.85rem',
-        color: '#555'
+        color: '#555',
+        opacity: loaded ? 1 : 0,
+        transition: 'opacity 0.7s ease-out',
+        transitionDelay: '0.7s',
       }}>
         © 2025 • Deathrun Server
       </footer>
