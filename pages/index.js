@@ -105,6 +105,23 @@ export default function Home() {
         </a>
       </div>
 
+
+{/* Быстрая навигация */}
+<div style={{ 
+  display: 'flex', 
+  gap: '1.2rem', 
+  marginTop: '2rem', 
+  flexWrap: 'wrap', 
+  justifyContent: 'center',
+  fontSize: '0.95rem'
+}}>
+  <a href="/stats" style={{ color: '#b19cd9', textDecoration: 'none' }}>Статистика</a>
+  <a href="/maps" style={{ color: '#b19cd9', textDecoration: 'none' }}>Карты</a>
+  <a href="/staff" style={{ color: '#b19cd9', textDecoration: 'none' }}>Команда</a>
+  <a href="/logs" style={{ color: '#b19cd9', textDecoration: 'none' }}>Логи</a>
+</div>
+
+
       {/* Футер */}
       <footer style={{
         position: 'absolute',
