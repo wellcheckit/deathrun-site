@@ -11,8 +11,8 @@ export default function AdminDemo() {
     { id: 5, name: 'Builder42', status: 'offline', role: 'user', lastSeen: '1 час назад', ping: 0 },
   ]);
   const [bans, setBans] = useState([
-    { id: 101, player: 'CheaterPro', reason: 'Использование читов', admin: 'Admin123', duration: 'PERM', date: '2025-11-05' },
-    { id: 102, player: 'ToxicPlayer', reason: 'Токсичность', admin: 'MedicPro', duration: '2ч', date: '2025-11-04' },
+    { id: 101, player: 'CheaterPro', reason: 'Использование читов', admin: 'Admin123', duration: 'PERM', date: '2025-11-05', active: true },
+    { id: 102, player: 'ToxicPlayer', reason: 'Токсичность', admin: 'MedicPro', duration: '2ч', date: '2025-11-04', active: true },
   ]);
   const [logs, setLogs] = useState([
     { id: 1, action: 'Игрок подключился', user: 'DarkKnight', time: '12:34:56', type: 'connect' },
@@ -28,6 +28,15 @@ export default function AdminDemo() {
     map: 'gm_construct',
     fps: 60
   });
+  const [newBanReason, setNewBanReason] = useState('');
+  const [newKickReason, setNewKickReason] = useState('');
+  const [newBanDuration, setNewBanDuration] = useState('30m');
+  const [chatMessages, setChatMessages] = useState([
+    { id: 1, user: 'DarkKnight', message: 'Привет всем!', time: '12:30' },
+    { id: 2, user: 'Admin123', message: 'Добро пожаловать!', time: '12:31' },
+    { id: 3, user: 'SniperX', message: 'Где оружие?', time: '12:32' },
+  ]);
+  const [newChatMessage, setNewChatMessage] = useState('');
 
   // Симуляция обновления данных
   useEffect(() => {
@@ -42,16 +51,36 @@ export default function AdminDemo() {
   }, []);
 
   const handleKick = (id) => {
-    setPlayers(players.filter(p => p.id !== id));
-    setLogs([{ id: logs.length + 1, action: 'Игрок кикнут', user: players.find(p => p.id === id)?.name, time: new Date().toLocaleTimeString(), type: 'kick' }, ...logs]);
+    const player = players.find(p => p.id === id);
+    if (player && newKickReason) {
+      setPlayers(players.filter(p => p.id !== id));
+      setLogs([{ id: logs.length + 1, action: `Кик: ${newKickReason}`, user: player.name, time: new Date().toLocaleTimeString(), type: 'kick' }, ...logs]);
+      alert(`Игрок ${player.name} кикнут: ${newKickReason}`);
+      setNewKickReason('');
+    }
   };
 
   const handleBan = (id) => {
     const player = players.find(p => p.id === id);
-    if (player) {
-      setBans([{ id: bans.length + 103, player: player.name, reason: 'Нарушение правил', admin: 'Admin123', duration: '2ч', date: new Date().toISOString().split('T')[0] }, ...bans]);
+    if (player && newBanReason) {
+      setBans([{ id: bans.length + 103, player: player.name, reason: newBanReason, admin: 'Admin123', duration: newBanDuration, date: new Date().toISOString().split('T')[0], active: true }, ...bans]);
       setPlayers(players.filter(p => p.id !== id));
-      setLogs([{ id: logs.length + 1, action: 'Бан на 2 часа', user: player.name, time: new Date().toLocaleTimeString(), type: 'ban' }, ...logs]);
+      setLogs([{ id: logs.length + 1, action: `Бан: ${newBanReason} (${newBanDuration})`, user: player.name, time: new Date().toLocaleTimeString(), type: 'ban' }, ...logs]);
+      alert(`Игрок ${player.name} заблокирован: ${newBanReason} на ${newBanDuration}`);
+      setNewBanReason('');
+    }
+  };
+
+  const handleUnban = (banId) => {
+    setBans(bans.map(ban => ban.id === banId ? { ...ban, active: false } : ban));
+    setLogs([{ id: logs.length + 1, action: 'Разбан', user: bans.find(b => b.id === banId)?.player, time: new Date().toLocaleTimeString(), type: 'unban' }, ...logs]);
+    alert(`Игрок разбанен!`);
+  };
+
+  const handleSendMessage = () => {
+    if (newChatMessage.trim()) {
+      setChatMessages([...chatMessages, { id: chatMessages.length + 1, user: 'ADMIN', message: newChatMessage, time: new Date().toLocaleTimeString() }]);
+      setNewChatMessage('');
     }
   };
 
@@ -90,16 +119,39 @@ export default function AdminDemo() {
         <button className="btn btn-secondary">Изменить карту 🗺️</button>
       </div>
 
-      <div className="recent-activity">
-        <h3>Недавние действия</h3>
-        <div className="activity-list">
-          {logs.slice(0, 5).map(log => (
-            <div key={log.id} className="activity-item">
-              <span className="time">{log.time}</span>
-              <span className="action">{log.action}</span>
-              <span className="user">{log.user}</span>
-            </div>
-          ))}
+      <div className="dashboard-grid">
+        <div className="panel">
+          <h3>Чат сервера 💬</h3>
+          <div className="chat-container">
+            {chatMessages.map(msg => (
+              <div key={msg.id} className="chat-message">
+                <span className="chat-user">{msg.user}:</span> {msg.message} <span className="chat-time">{msg.time}</span>
+              </div>
+            ))}
+          </div>
+          <div className="chat-input">
+            <input 
+              type="text" 
+              value={newChatMessage} 
+              onChange={(e) => setNewChatMessage(e.target.value)} 
+              placeholder="Сообщение от администратора..." 
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            />
+            <button className="btn btn-sm" onClick={handleSendMessage}>Отправить</button>
+          </div>
+        </div>
+
+        <div className="panel">
+          <h3>Недавние действия</h3>
+          <div className="activity-list">
+            {logs.slice(0, 8).map(log => (
+              <div key={log.id} className="activity-item">
+                <span className="time">{log.time}</span>
+                <span className="action">{log.action}</span>
+                <span className="user">{log.user}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -135,8 +187,34 @@ export default function AdminDemo() {
               <td>{player.ping} мс</td>
               <td>{player.lastSeen}</td>
               <td>
-                <button className="btn-sm" onClick={() => handleKick(player.id)}>Кикнуть ⚠️</button>
-                <button className="btn-sm btn-danger" onClick={() => handleBan(player.id)}>Бан 🔨</button>
+                <div className="action-group">
+                  <input 
+                    type="text" 
+                    placeholder="Причина кика" 
+                    value={newKickReason} 
+                    onChange={(e) => setNewKickReason(e.target.value)} 
+                    className="reason-input"
+                  />
+                  <button className="btn-sm" onClick={() => handleKick(player.id)}>Кикнуть ⚠️</button>
+                </div>
+                <div className="action-group">
+                  <select value={newBanDuration} onChange={(e) => setNewBanDuration(e.target.value)} className="duration-select">
+                    <option value="30m">30 мин</option>
+                    <option value="1h">1 час</option>
+                    <option value="2h">2 часа</option>
+                    <option value="6h">6 часов</option>
+                    <option value="24h">24 часа</option>
+                    <option value="PERM">PERM</option>
+                  </select>
+                  <input 
+                    type="text" 
+                    placeholder="Причина бана" 
+                    value={newBanReason} 
+                    onChange={(e) => setNewBanReason(e.target.value)} 
+                    className="reason-input"
+                  />
+                  <button className="btn-sm btn-danger" onClick={() => handleBan(player.id)}>Бан 🔨</button>
+                </div>
               </td>
             </tr>
           ))}
@@ -160,6 +238,8 @@ export default function AdminDemo() {
             <th>Админ</th>
             <th>Длительность</th>
             <th>Дата</th>
+            <th>Статус</th>
+            <th>Действия</th>
           </tr>
         </thead>
         <tbody>
@@ -171,6 +251,10 @@ export default function AdminDemo() {
               <td>{ban.admin}</td>
               <td>{ban.duration}</td>
               <td>{ban.date}</td>
+              <td><span className={`status ${ban.active ? 'active' : 'inactive'}`}>{ban.active ? 'Активен' : 'Завершен'}</span></td>
+              <td>
+                {ban.active && <button className="btn-sm btn-success" onClick={() => handleUnban(ban.id)}>Разбанить ✅</button>}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -188,6 +272,7 @@ export default function AdminDemo() {
             <option>Подключения</option>
             <option>Отключения</option>
             <option>Баны</option>
+            <option>Кики</option>
             <option>Чат</option>
           </select>
         </div>
@@ -214,6 +299,45 @@ export default function AdminDemo() {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+
+  const renderSettings = () => (
+    <div className="settings-panel">
+      <h2>Настройки сервера ⚙️</h2>
+      
+      <div className="setting-group">
+        <h3>Общие настройки</h3>
+        <div className="setting-item">
+          <label>Макс. игроков:</label>
+          <input type="number" defaultValue="32" />
+        </div>
+        <div className="setting-item">
+          <label>Режим игры:</label>
+          <select>
+            <option>Deathrun</option>
+            <option>Sandbox</option>
+            <option>TDM</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="setting-group">
+        <h3>Правила сервера</h3>
+        <textarea placeholder="Введите правила сервера...">1. Запрещено использовать читы
+2. Уважайте других игроков
+3. Запрещена токсичность</textarea>
+      </div>
+
+      <div className="setting-group">
+        <h3>Команды администратора</h3>
+        <div className="command-list">
+          <div className="command-item">!kick [игрок] [причина] - кик игрока</div>
+          <div className="command-item">!ban [игрок] [время] [причина] - бан игрока</div>
+          <div className="command-item">!unban [ID] - разбан игрока</div>
+          <div className="command-item">!say [сообщение] - отправить сообщение</div>
+        </div>
+      </div>
     </div>
   );
 
@@ -368,6 +492,9 @@ export default function AdminDemo() {
           .btn-danger {
             background: linear-gradient(45deg, var(--danger), #cc0000);
           }
+          .btn-success {
+            background: linear-gradient(45deg, var(--success), #009944);
+          }
           .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -403,6 +530,14 @@ export default function AdminDemo() {
           .status.afk {
             background: rgba(255, 170, 0, 0.2);
             color: var(--warning);
+          }
+          .status.active {
+            background: rgba(0, 200, 0, 0.2);
+            color: var(--success);
+          }
+          .status.inactive {
+            background: rgba(100, 100, 100, 0.2);
+            color: #aaa;
           }
           .btn-sm {
             padding: 6px 12px;
@@ -465,8 +600,117 @@ export default function AdminDemo() {
           .log-type.connect { background: rgba(0,200,0,0.2); color: var(--success); }
           .log-type.disconnect { background: rgba(200,0,0,0.2); color: var(--danger); }
           .log-type.ban { background: rgba(200,0,0,0.2); color: var(--danger); }
+          .log-type.unban { background: rgba(0,200,200,0.2); color: #00cccc; }
           .log-type.kick { background: rgba(255,170,0,0.2); color: var(--warning); }
           .log-type.chat { background: rgba(0,170,255,0.2); color: var(--primary); }
+          .action-group {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 5px;
+            align-items: center;
+          }
+          .reason-input, .duration-select {
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: rgba(30,30,40,0.8);
+            border: 1px solid var(--border);
+            color: white;
+            font-size: 0.8rem;
+          }
+          .reason-input {
+            width: 150px;
+          }
+          .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+          }
+          .panel {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+          }
+          .chat-container {
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            background: rgba(30,30,40,0.5);
+            padding: 10px;
+            border-radius: 6px;
+          }
+          .chat-message {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+          }
+          .chat-user {
+            color: var(--primary);
+            font-weight: 600;
+          }
+          .chat-time {
+            color: #aaa;
+            font-size: 0.8rem;
+          }
+          .chat-input {
+            display: flex;
+            gap: 10px;
+          }
+          .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(30,30,40,0.8);
+            border: 1px solid var(--border);
+            color: white;
+          }
+          .settings-panel {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+          }
+          .setting-group {
+            margin-bottom: 30px;
+          }
+          .setting-group h3 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+          }
+          .setting-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+          }
+          .setting-item label {
+            min-width: 150px;
+          }
+          .setting-item input, .setting-item select, textarea {
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(30,30,40,0.8);
+            border: 1px solid var(--border);
+            color: white;
+            flex: 1;
+          }
+          textarea {
+            height: 100px;
+            resize: vertical;
+          }
+          .command-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+          .command-item {
+            padding: 10px;
+            background: rgba(30,30,40,0.5);
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+          }
         `}</style>
       </Head>
 
@@ -481,7 +725,7 @@ export default function AdminDemo() {
           <button className={`tab ${activeTab === 'players' ? 'active' : ''}`} onClick={() => setActiveTab('players')}>Игроки 👥</button>
           <button className={`tab ${activeTab === 'bans' ? 'active' : ''}`} onClick={() => setActiveTab('bans')}>Блокировки 🔒</button>
           <button className={`tab ${activeTab === 'logs' ? 'active' : ''}`} onClick={() => setActiveTab('logs')}>Логи 📋</button>
-          <button className="tab">Настройки ⚙️</button>
+          <button className={`tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>Настройки ⚙️</button>
           <button className="tab">Карта 🗺️</button>
           <button className="tab">Чат 💬</button>
         </div>
@@ -491,6 +735,7 @@ export default function AdminDemo() {
           {activeTab === 'players' && renderPlayers()}
           {activeTab === 'bans' && renderBans()}
           {activeTab === 'logs' && renderLogs()}
+          {activeTab === 'settings' && renderSettings()}
         </div>
       </div>
     </>
