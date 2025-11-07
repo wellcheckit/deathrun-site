@@ -1,119 +1,79 @@
+// pages/index.js
+import { useState, useEffect } from 'react';
+
 export default function Home() {
   return (
     <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#0a0310', // тёмно-фиолетовый/чёрный
-      color: '#f0d9a5', // "пыльно-золотой" -- как старый пергамент
-      fontFamily: '"Creepster", "Courier New", monospace',
+      flex: 1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '1rem',
-      position: 'relative',
+      padding: '1.5rem',
       textAlign: 'center',
-      backgroundImage: 'radial-gradient(circle at 10% 20%, rgba(128, 0, 128, 0.1) 0%, transparent 20%)',
-      textShadow: '0 0 8px rgba(255, 105, 180, 0.3)'
+      position: 'relative',
+      maxWidth: '800px',
+      margin: '0 auto'
     }}>
-      {/* Подключаем шрифт Creepster (халявный, с Google Fonts) */}
-      <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet" />
-{/* Мерцающая свеча над логотипом */}
-<div style={{
-  marginBottom: '1.5rem',
-  fontSize: '2.5rem',
-  height: '40px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'flex-end'
-}}>
-  <span
-    style={{
-      animation: 'flicker 2.5s infinite alternate',
-      WebkitAnimation: 'flicker 2.5s infinite alternate',
-      textShadow: '0 0 10px #ff6b6b, 0 0 20px #ff2a2a',
-      display: 'inline-block'
-    }}
-  >
-    🕯️
-  </span>
-</div>
-
-{/* Логотип */}
-<h1 style={{
-  fontSize: '4rem',
-  fontWeight: 'normal',
-  marginBottom: '1.5rem',
-  letterSpacing: '3px',
-  color: '#ff6b6b',
-  textShadow: '0 0 15px rgba(255, 107, 107, 0.7), 0 0 30px rgba(255, 107, 107, 0.4)',
-  lineHeight: 1
-}}>
-  DEATHRUN
-</h1>
-
-{/* Кастомные CSS-анимации (встроены в style) */}
-<style jsx>{`
-  @keyframes flicker {
-    0% { opacity: 0.8; transform: scale(1); }
-    20% { opacity: 1; transform: scale(1.02); }
-    40% { opacity: 0.9; transform: scale(0.98); }
-    60% { opacity: 1; transform: scale(1.01); }
-    80% { opacity: 0.85; transform: scale(0.99); }
-    100% { opacity: 0.95; transform: scale(1); }
-  }
-`}</style>
-
-      {/* Хэллоуинская надпись */}
-      <p style={{
-        fontSize: '1.6rem',
-        marginBottom: '2.5rem',
-        color: '#d4af37', // золотой
-        fontFamily: '"Creepster", cursive',
-        textShadow: '0 0 10px rgba(212, 175, 55, 0.5)'
+      {/* Мерцающая свеча */}
+      <div style={{
+        marginBottom: '1.2rem',
+        fontSize: '2.2rem',
+        animation: 'flicker 3s infinite alternate',
+        textShadow: '0 0 12px #d4af37'
       }}>
-        Ты не бегун. Ты -- приманка.
+        🕯️
+      </div>
+
+      {/* Заголовок */}
+      <h1 style={{
+        fontSize: '3.5rem',
+        fontWeight: 'normal',
+        marginBottom: '1.2rem',
+        fontFamily: '"Creepster", cursive',
+        color: '#d4af37', // золотой
+        textShadow: '0 0 15px rgba(212, 175, 55, 0.5)'
+      }}>
+        DEATHRUN
+      </h1>
+
+      {/* Подзаголовок */}
+      <p style={{
+        fontSize: '1.3rem',
+        marginBottom: '2rem',
+        color: '#c7a2ff', // фиолетовый
+        opacity: 0.9
+      }}>
+        Ты не бегун. Ты -- приманка для ловушек.
       </p>
 
       {/* IP */}
       <div style={{
         marginBottom: '2rem',
-        padding: '0.8rem 1.5rem',
-        backgroundColor: 'rgba(20, 5, 30, 0.6)',
-        border: '1px solid #8a2be2', // фиолетовый
+        padding: '0.7rem 1.4rem',
+        background: 'rgba(20, 8, 40, 0.6)',
+        border: '1px solid #8a2be2',
         borderRadius: '8px',
-        fontFamily: '"Courier New", monospace',
-        fontSize: '1.2rem',
-        backdropFilter: 'blur(2px)'
+        fontFamily: 'monospace',
+        fontSize: '1.15rem'
       }}>
-        🎃 <strong>dr.yourserver.com:27015</strong>
+        🎃 dr.yourserver.com:27015
       </div>
 
       {/* Кнопки */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
         <a
           href="steam://connect/dr.yourserver.com:27015"
           style={{
-            display: 'inline-block',
-            padding: '0.9rem 2.5rem',
-            backgroundColor: '#8a0303', // тёмно-красный
-            color: '#ffd700', // золотой
+            padding: '0.8rem 2.2rem',
+            background: 'linear-gradient(to bottom, #5a0a0a, #2a0404)',
+            color: '#ffd700',
             textDecoration: 'none',
             borderRadius: '30px',
+            fontSize: '1.1rem',
             fontWeight: 'bold',
-            fontSize: '1.2rem',
-            textTransform: 'uppercase',
-            letterSpacing: '2px',
-            border: '2px solid #ff6b6b',
-            boxShadow: '0 0 15px rgba(138, 3, 3, 0.6)',
-            transition: 'all 0.3s'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#a00';
-            e.target.style.boxShadow = '0 0 25px rgba(255, 107, 107, 0.8)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#8a0303';
-            e.target.style.boxShadow = '0 0 15px rgba(138, 3, 3, 0.6)';
+            border: '1px solid #d4af37',
+            boxShadow: '0 0 12px rgba(138, 43, 226, 0.3)'
           }}
         >
           Войти в ад
@@ -122,11 +82,11 @@ export default function Home() {
         <a
           href="/rules"
           style={{
-            color: '#c7a2ff', // фиолетовый
+            color: '#b19cd9',
             textDecoration: 'none',
-            fontSize: '1.1rem',
+            fontSize: '1.05rem',
             fontFamily: '"Creepster", cursive',
-            textShadow: '0 0 6px rgba(199, 162, 255, 0.5)'
+            marginTop: '0.3rem'
           }}
         >
           Книга проклятий →
@@ -139,17 +99,9 @@ export default function Home() {
           href="https://discord.gg/YOUR_INVITE"
           target="_blank"
           rel="noopener noreferrer"
-          style={{
-            color: '#b19cd9',
-            textDecoration: 'none',
-            fontSize: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px'
-          }}
+          style={{ color: '#a98cd9', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}
         >
-          <span>🕯️ Присоединиться к ковену</span>
+          🕸️ Присоединиться к ковену
         </a>
       </div>
 
@@ -157,24 +109,13 @@ export default function Home() {
       <footer style={{
         position: 'absolute',
         bottom: '1.2rem',
-        color: '#6b4423',
+        width: '100%',
+        textAlign: 'center',
         fontSize: '0.8rem',
-        fontFamily: '"Courier New", monospace'
+        color: '#6b4423'
       }}>
-        etochto • halloween 2025
+        etochto • halloween rite
       </footer>
-
-      {/* Паутинка (легкий элемент декора) */}
-      <div style={{
-        position: 'absolute',
-        top: '20px',
-        right: '20px',
-        fontSize: '2rem',
-        opacity: 0.3,
-        pointerEvents: 'none'
-      }}>
-        🕸️
-      </div>
     </div>
   );
 }
