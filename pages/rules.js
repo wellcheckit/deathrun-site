@@ -3,63 +3,64 @@ export default function Rules() {
   return (
     <div style={{
       flex: 1,
-      padding: '2rem 1.5rem',
+      padding: '2.5rem 1.5rem',
       maxWidth: '700px',
       margin: '0 auto',
-      position: 'relative'
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       <h1 style={{
-        fontSize: '2.6rem',
-        textAlign: 'center',
+        fontSize: '2.4rem',
+        fontWeight: 700,
         marginBottom: '2rem',
-        fontFamily: '"Creepster", cursive',
-        color: '#d4af37',
-        textShadow: '0 0 10px rgba(212, 175, 55, 0.4)'
+        color: '#ff2a2a'
       }}>
-        КНИГА ПРОКЛЯТИЙ
+        Правила сервера
       </h1>
 
       <div style={{
-        background: 'rgba(20, 8, 40, 0.5)',
-        border: '1px solid #8a2be2',
-        borderRadius: '10px',
-        padding: '1.8rem',
-        lineHeight: 1.9,
-        fontSize: '1.15rem'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.4rem'
       }}>
-        <div style={{ marginBottom: '1.3rem' }}>
-          <span style={{ color: '#d4af37', fontWeight: 'bold' }}>I.</span> Бегун священен.  
-          Нарушивший -- будет прикован к ловушке.
-        </div>
-        <div style={{ marginBottom: '1.3rem' }}>
-          <span style={{ color: '#d4af37', fontWeight: 'bold' }}>II.</span> Ловушки -- дар ада.  
-          Спам -- позор. Позор -- изгнание.
-        </div>
-        <div style={{ marginBottom: '1.3rem' }}>
-          <span style={{ color: '#d4af37', fontWeight: 'bold' }}>III.</span> Админы -- жрецы.  
-          Их слово -- закон.
-        </div>
-        <div style={{ marginBottom: '1.3rem' }}>
-          <span style={{ color: '#d4af37', fontWeight: 'bold' }}>IV.</span> Читы -- проклятие.  
-          Проклятый не вернётся.
-        </div>
-        <div>
-          <span style={{ color: '#d4af37', fontWeight: 'bold' }}>V.</span> Уважай братьев по аду.  
-          Токсичность убивает дух.
-        </div>
+        {[
+          "Бегун неприкосновенен. Атака без причины = бан.",
+          "Спам ловушками запрещён. Используй их с умом.",
+          "Уважай админов и других игроков. Токсичность не приветствуется.",
+          "Читы, баги, эксплойты -- автоматический перманентный бан.",
+          "Админы имеют право изменить правила без предупреждения."
+        ].map((rule, i) => (
+          <div key={i} style={{
+            padding: '1rem',
+            background: 'rgba(255, 255, 255, 0.02)',
+            borderRadius: '6px',
+            fontSize: '1.05rem',
+            lineHeight: 1.6
+          }}>
+            <span style={{
+              color: '#ff2a2a',
+              fontWeight: 600,
+              marginRight: '0.6rem'
+            }}>
+              {i + 1}.
+            </span>
+            {rule}
+          </div>
+        ))}
       </div>
 
-      <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
+      <div style={{ marginTop: '2.5rem' }}>
         <a
           href="/"
           style={{
-            color: '#c7a2ff',
-            textDecoration: 'none',
-            fontFamily: '"Creepster", cursive',
-            fontSize: '1.1rem'
+            color: '#ff2a2a',
+            fontWeight: 600,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px'
           }}
         >
-          ← вернуться в ночь
+          ← Назад
         </a>
       </div>
     </div>

@@ -9,129 +9,100 @@ export default function Home() {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '1.5rem',
+      padding: '2rem 1.5rem',
       textAlign: 'center',
-      position: 'relative',
-      maxWidth: '800px',
+      maxWidth: '700px',
       margin: '0 auto'
     }}>
-      {/* Мерцающая свеча */}
-      <div style={{
-        marginBottom: '1.2rem',
-        fontSize: '2.2rem',
-        animation: 'flicker 3s infinite alternate',
-        textShadow: '0 0 12px #d4af37'
-      }}>
-        🕯️
-      </div>
-
       {/* Заголовок */}
       <h1 style={{
-        fontSize: '3.5rem',
-        fontWeight: 'normal',
-        marginBottom: '1.2rem',
-        fontFamily: '"Creepster", cursive',
-        color: '#d4af37', // золотой
-        textShadow: '0 0 15px rgba(212, 175, 55, 0.5)'
+        fontSize: '3.2rem',
+        fontWeight: 700,
+        marginBottom: '1rem',
+        background: 'linear-gradient(to right, #ff2a2a, #ff5555)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text'
       }}>
         DEATHRUN
       </h1>
 
       {/* Подзаголовок */}
       <p style={{
-        fontSize: '1.3rem',
-        marginBottom: '2rem',
-        color: '#c7a2ff', // фиолетовый
-        opacity: 0.9
+        color: '#aaa',
+        fontSize: '1.2rem',
+        marginBottom: '2.5rem',
+        lineHeight: 1.6
       }}>
-        Ты не бегун. Ты -- приманка для ловушек.
+        Чистый, быстрый, без компромиссов.  
+        Беги. Умирай. Повторяй.
       </p>
 
       {/* IP */}
       <div style={{
         marginBottom: '2rem',
-        padding: '0.7rem 1.4rem',
-        background: 'rgba(20, 8, 40, 0.6)',
-        border: '1px solid #8a2be2',
+        padding: '0.8rem 1.6rem',
+        background: 'rgba(255, 255, 255, 0.03)',
         borderRadius: '8px',
+        fontSize: '1.2rem',
         fontFamily: 'monospace',
-        fontSize: '1.15rem'
+        letterSpacing: '1px'
       }}>
-        🎃 dr.yourserver.com:27015
+        dr.yourserver.com:27015
       </div>
 
-      {/* Кнопки */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
-        <a
-          href="steam://connect/dr.yourserver.com:27015"
-          style={{
-            padding: '0.8rem 2.2rem',
-            background: 'linear-gradient(to bottom, #5a0a0a, #2a0404)',
-            color: '#ffd700',
-            textDecoration: 'none',
-            borderRadius: '30px',
-            fontSize: '1.1rem',
-            fontWeight: 'bold',
-            border: '1px solid #d4af37',
-            boxShadow: '0 0 12px rgba(138, 43, 226, 0.3)'
-          }}
-        >
-          Войти в ад
-        </a>
+      {/* Кнопка */}
+      <a
+        href="steam://connect/dr.yourserver.com:27015"
+        style={{
+          display: 'inline-block',
+          padding: '0.9rem 2.4rem',
+          background: '#ff2a2a',
+          color: '#fff',
+          borderRadius: '6px',
+          fontWeight: 600,
+          fontSize: '1.1rem',
+          transition: 'background 0.25s ease, transform 0.15s ease',
+          boxShadow: '0 4px 12px rgba(255, 42, 42, 0.25)'
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.background = '#ff0000';
+          e.target.style.transform = 'translateY(-2px)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.background = '#ff2a2a';
+          e.target.style.transform = 'translateY(0)';
+        }}
+      >
+        Подключиться
+      </a>
 
-        <a
-          href="/rules"
-          style={{
-            color: '#b19cd9',
-            textDecoration: 'none',
-            fontSize: '1.05rem',
-            fontFamily: '"Creepster", cursive',
-            marginTop: '0.3rem'
-          }}
-        >
-          Книга проклятий →
-        </a>
-      </div>
+      {/* Навигация */}
+      <nav style={{
+        display: 'flex',
+        gap: '1.8rem',
+        marginTop: '3rem',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        fontSize: '0.95rem',
+        color: '#777'
+      }}>
+        <a href="/rules">Правила</a>
+        <a href="/stats">Статистика</a>
+        <a href="/maps">Карты</a>
+        <a href="/staff">Команда</a>
+      </nav>
 
-      {/* Discord */}
-      <div style={{ marginTop: '2.5rem' }}>
-        <a
-          href="https://discord.gg/YOUR_INVITE"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#a98cd9', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}
-        >
-          🕸️ Присоединиться к ковену
-        </a>
-      </div>
-
-
-{/* Быстрая навигация */}
-<div style={{ 
-  display: 'flex', 
-  gap: '1.2rem', 
-  marginTop: '2rem', 
-  flexWrap: 'wrap', 
-  justifyContent: 'center',
-  fontSize: '0.95rem'
-}}>
-  <a href="/stats" style={{ color: '#b19cd9', textDecoration: 'none' }}>Статистика</a>
-  <a href="/maps" style={{ color: '#b19cd9', textDecoration: 'none' }}>Карты</a>
-  <a href="/staff" style={{ color: '#b19cd9', textDecoration: 'none' }}>Команда</a>
-  <a href="/logs" style={{ color: '#b19cd9', textDecoration: 'none' }}>Логи</a>
-</div>
-
-
-      {/* Футер */}
+      {/* Footer */}
       <footer style={{
         position: 'absolute',
-        bottom: '1.2rem',
+        bottom: '1.5rem',
         width: '100%',
         textAlign: 'center',
-        fontSize: '0.8rem',
-        color: '#6b4423'
+        fontSize: '0.85rem',
+        color: '#555'
       }}>
-        etochto • halloween rite
+        © 2025 • Deathrun Server
       </footer>
     </div>
   );
