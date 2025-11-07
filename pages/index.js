@@ -1,12 +1,27 @@
 import Head from 'next/head';
 
-export default function Home() {
+export default function AdminDemo() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [players, setPlayers] = useState([
+    { id: 1, name: 'Player1', status: 'online', role: 'user' },
+    { id: 2, name: 'Player2', status: 'offline', role: 'admin' },
+    { id: 3, name: 'Player3', status: 'online', role: 'mod' },
+  ]);
+  const [logs, setLogs] = useState([
+    { id: 1, time: '10:00', user: 'Player1', action: 'Connected' },
+    { id: 2, time: '10:05', user: 'Player2', action: 'Kicked Player3' },
+    { id: 3, time: '10:10', user: 'Player1', action: 'Used command !help' },
+  ]);
+
+  const handleKick = (id) => {
+    setPlayers(players.map(p => p.id === id ? {...p, status: 'offline'} : p));
+    setLogs([...logs, { id: logs.length + 1, time: new Date().toLocaleTimeString(), user: 'Server', action: `Kicked player ID ${id}` }]);
+  };
+
   return (
     <>
       <Head>
-        <title>etochno - Garry's Mod сервер</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="Мультиплеерный сервер Garry's Mod" />
+        <title>Admin Panel - etochno Demo</title>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
           body {
@@ -16,159 +31,240 @@ export default function Home() {
             color: #e0e0e0;
             overflow-x: hidden;
           }
-          .container {
-            max-width: 1200px;
+          .admin-container {
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
           }
-          .hero {
-            text-align: center;
-            padding: 80px 20px;
-            background: radial-gradient(circle, rgba(30,30,40,0.8) 0%, rgba(10,10,15,1) 100%);
-            position: relative;
-            overflow: hidden;
+          .sidebar {
+            background: rgba(20,20,30,0.9);
+            padding: 20px;
+            border-right: 1px solid #333;
           }
-          .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjAuNSIgZmlsbD0iIzMzMyIgb3BhY2l0eT0iMC4xIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+PC9zdmc+');
+          .sidebar h2 {
+            color: #00aaff;
+            margin-top: 0;
           }
-          .features {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 60px 20px;
-            background: rgba(10,10,15,0.7);
+          .sidebar ul {
+            list-style: none;
+            padding: 0;
           }
-          .feature-card {
+          .sidebar li {
+            padding: 10px 0;
+          }
+          .sidebar a {
+            color: #aaa;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s;
+          }
+          .sidebar a:hover, .sidebar a.active {
+            color: #00aaff;
+          }
+          .main-content {
+            padding: 20px;
+            background: rgba(10,10,15,0.8);
+          }
+          .card {
             background: rgba(30, 30, 40, 0.6);
             border: 1px solid rgba(80, 80, 100, 0.3);
             border-radius: 12px;
-            padding: 25px;
-            width: 250px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 20px;
+            margin-bottom: 20px;
           }
-          .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            background: rgba(40, 40, 50, 0.7);
+          .table {
+            width: 100%;
+            border-collapse: collapse;
           }
+          .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+          }
+          .status-online { color: #4caf50; }
+          .status-offline { color: #f44336; }
           .btn {
             background: linear-gradient(45deg, #00aaff, #0077ff);
             border: none;
-            padding: 12px 28px;
-            border-radius: 50px;
+            padding: 8px 16px;
+            border-radius: 6px;
             color: white;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            margin: 5px;
+            margin: 0 3px;
           }
           .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,170,255,0.4);
+            opacity: 0.9;
           }
-          .btn-secondary {
-            background: rgba(255,255,255,0.1);
+          .btn-danger {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
           }
-          .btn-secondary:hover {
-            background: rgba(255,255,255,0.2);
+          .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
           }
-          .footer {
+          .stat-card {
+            background: rgba(40, 40, 60, 0.7);
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
-            padding: 30px;
-            background: rgba(5,5,10,0.9);
-            color: #aaa;
-            border-top: 1px solid rgba(80,80,100,0.2);
           }
-          .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-          }
-          .nav a {
-            color: #aaa;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: 300;
-            transition: color 0.3s;
-          }
-          .nav a:hover {
+          .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
             color: #00aaff;
-          }
-          h1, h2, h3 {
-            font-weight: 600;
-            margin: 0;
-          }
-          h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            background: linear-gradient(to right, #ffffff, #a0a0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-          }
-          p {
-            font-size: 1.1rem;
-            color: #bbb;
-            max-width: 600px;
-            margin: 0 auto 25px;
-          }
-          .emoji {
-            font-size: 1.5rem;
-            vertical-align: middle;
-            margin: 0 5px;
           }
         `}</style>
       </Head>
 
-      <header>
-        <div className="nav">
-          <h1>etochno</h1>
-          <nav>
-            <a href="#about">О сервере</a>
-            <a href="#rules">Правила</a>
-            <a href="#contact">Контакты</a>
-            <button className="btn btn-secondary">Подключиться</button>
-          </nav>
-        </div>
-      </header>
+      <div className="admin-container">
+        <aside className="sidebar">
+          <h2>etochno Admin 🛠️</h2>
+          <ul>
+            <li><a href="#" className={activeTab === 'dashboard' ? 'active' : ''} onClick={() => setActiveTab('dashboard')}>Панель управления</a></li>
+            <li><a href="#" className={activeTab === 'players' ? 'active' : ''} onClick={() => setActiveTab('players')}>Игроки</a></li>
+            <li><a href="#" className={activeTab === 'logs' ? 'active' : ''} onClick={() => setActiveTab('logs')}>Логи</a></li>
+            <li><a href="#" className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}>Настройки</a></li>
+            <li><a href="#" className={activeTab === 'chat' ? 'active' : ''} onClick={() => setActiveTab('chat')}>Чат</a></li>
+          </ul>
+        </aside>
 
-      <main>
-        <section className="hero">
-          <div className="container">
-            <h2>Добро пожаловать на etochto 🎮</h2>
-            <p>Мультиплеерный сервер Garry's Mod с реалистичным геймплеем и активным сообществом. Присоединяйся к нам!</p>
-            <button className="btn">Играть сейчас ➡️</button>
-          </div>
-        </section>
+        <main className="main-content">
+          {activeTab === 'dashboard' && (
+            <div>
+              <h1>Панель управления 📊</h1>
+              <div className="dashboard-stats">
+                <div className="stat-card">
+                  <div className="stat-number">24</div>
+                  <div>Игроков онлайн</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-number">142</div>
+                  <div>Всего игроков</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-number">5</div>
+                  <div>Админов</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-number">99.9%</div>
+                  <div>Время работы</div>
+                </div>
+              </div>
+              <div className="card">
+                <h3>Сервер статус</h3>
+                <p>✅ Сервер запущен и работает стабильно</p>
+                <p>📍 IP: 192.168.1.100:27015</p>
+                <p>🎮 Карта: gm_flatgrass</p>
+              </div>
+            </div>
+          )}
 
-        <section className="features">
-          <div className="feature-card">
-            <h3>🎯 Реализм</h3>
-            <p>Иммерсивный геймплей с детализированными модами и физикой.</p>
-          </div>
-          <div className="feature-card">
-            <h3>👥 Сообщество</h3>
-            <p>Активные игроки, дружелюбная атмосфера и поддержка.</p>
-          </div>
-          <div className="feature-card">
-            <h3>⚡ Стабильность</h3>
-            <p>Высокая производительность сервера и минимальные задержки.</p>
-          </div>
-        </section>
-      </main>
+          {activeTab === 'players' && (
+            <div>
+              <h1>Управление игроками 👥</h1>
+              <div className="card">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Имя</th>
+                      <th>Статус</th>
+                      <th>Роль</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {players.map(player => (
+                      <tr key={player.id}>
+                        <td>{player.id}</td>
+                        <td>{player.name}</td>
+                        <td className={player.status === 'online' ? 'status-online' : 'status-offline'}>
+                          {player.status === 'online' ? '🟢 Онлайн' : '🔴 Офлайн'}
+                        </td>
+                        <td>{player.role === 'admin' ? '👑 Admin' : player.role === 'mod' ? '🛡️ Mod' : '👤 User'}</td>
+                        <td>
+                          <button className="btn">Замутить</button>
+                          <button className="btn btn-danger" onClick={() => handleKick(player.id)}>Кикнуть</button>
+                          <button className="btn">Дать роль</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
-      <footer className="footer">
-        <p>© 2025 etochno. Все права защищены. 🛡️</p>
-        <p>Сделано с ❤️ и 🍕 для сообщества GMod</p>
-      </footer>
+          {activeTab === 'logs' && (
+            <div>
+              <h1>Логи сервера 📝</h1>
+              <div className="card">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Время</th>
+                      <th>Пользователь</th>
+                      <th>Действие</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {logs.map(log => (
+                      <tr key={log.id}>
+                        <td>{log.time}</td>
+                        <td>{log.user}</td>
+                        <td>{log.action}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'settings' && (
+            <div>
+              <h1>Настройки сервера ⚙️</h1>
+              <div className="card">
+                <h3>Общие настройки</h3>
+                <p>Название сервера: etochno Server</p>
+                <p>Макс. игроков: 32</p>
+                <p>Режим игры: Sandbox</p>
+                <button className="btn">Сохранить изменения</button>
+              </div>
+              <div className="card">
+                <h3>Безопасность</h3>
+                <p>Античит: Включен</p>
+                <p>Вайтлист: Отключен</p>
+                <button className="btn">Обновить конфиг</button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'chat' && (
+            <div>
+              <h1>Чат сервера 💬</h1>
+              <div className="card">
+                <div style={{ height: '300px', overflowY: 'scroll', marginBottom: '10px', padding: '10px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
+                  <p>[10:00] <b>Player1:</b> Привет всем!</p>
+                  <p>[10:01] <b>Player2:</b> Привет! Как дела?</p>
+                  <p>[10:02] <b>Admin:</b> Добро пожаловать на etochno 🎮</p>
+                  <p>[10:03] <b>Player3:</b> Классный сервер!</p>
+                </div>
+                <input type="text" placeholder="Введите сообщение..." style={{ width: '100%', padding: '10px', borderRadius: '6px', background: '#222', color: 'white', border: '1px solid #444' }} />
+                <button className="btn" style={{ marginTop: '10px' }}>Отправить</button>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
     </>
   );
 }
+
+// Add useState hook at the top level
+const { useState } = React;
