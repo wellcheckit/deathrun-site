@@ -28,7 +28,7 @@ export default function Home() {
         marginBottom: '2rem',
         maxWidth: '32rem'
       }}>
-        Беги. Умирай. Повторяй.
+        Беги. Умирай. Повторяйааа.
       </p>
 
       {/* IP */}
