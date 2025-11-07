@@ -17,19 +17,51 @@ export default function Home() {
     }}>
       {/* Подключаем шрифт Creepster (халявный, с Google Fonts) */}
       <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet" />
+{/* Мерцающая свеча над логотипом */}
+<div style={{
+  marginBottom: '1.5rem',
+  fontSize: '2.5rem',
+  height: '40px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'flex-end'
+}}>
+  <span
+    style={{
+      animation: 'flicker 2.5s infinite alternate',
+      WebkitAnimation: 'flicker 2.5s infinite alternate',
+      textShadow: '0 0 10px #ff6b6b, 0 0 20px #ff2a2a',
+      display: 'inline-block'
+    }}
+  >
+    🕯️
+  </span>
+</div>
 
-      {/* Логотип */}
-      <h1 style={{
-        fontSize: '4rem',
-        fontWeight: 'normal',
-        marginBottom: '1.5rem',
-        letterSpacing: '3px',
-        color: '#ff6b6b', // "кроваво-розовый"
-        textShadow: '0 0 15px rgba(255, 107, 107, 0.7), 0 0 30px rgba(255, 107, 107, 0.4)',
-        lineHeight: 1
-      }}>
-        DEATHRUN
-      </h1>
+{/* Логотип */}
+<h1 style={{
+  fontSize: '4rem',
+  fontWeight: 'normal',
+  marginBottom: '1.5rem',
+  letterSpacing: '3px',
+  color: '#ff6b6b',
+  textShadow: '0 0 15px rgba(255, 107, 107, 0.7), 0 0 30px rgba(255, 107, 107, 0.4)',
+  lineHeight: 1
+}}>
+  DEATHRUN
+</h1>
+
+{/* Кастомные CSS-анимации (встроены в style) */}
+<style jsx>{`
+  @keyframes flicker {
+    0% { opacity: 0.8; transform: scale(1); }
+    20% { opacity: 1; transform: scale(1.02); }
+    40% { opacity: 0.9; transform: scale(0.98); }
+    60% { opacity: 1; transform: scale(1.01); }
+    80% { opacity: 0.85; transform: scale(0.99); }
+    100% { opacity: 0.95; transform: scale(1); }
+  }
+`}</style>
 
       {/* Хэллоуинская надпись */}
       <p style={{
