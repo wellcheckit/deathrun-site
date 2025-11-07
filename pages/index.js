@@ -37,6 +37,8 @@ export default function AdminDemo() {
     { id: 3, user: 'SniperX', message: 'Где оружие?', time: '12:32' },
   ]);
   const [newChatMessage, setNewChatMessage] = useState('');
+  const [selectedMap, setSelectedMap] = useState('gm_construct');
+  const [isRestarting, setIsRestarting] = useState(false);
 
   // Симуляция обновления данных
   useEffect(() => {
@@ -80,8 +82,35 @@ export default function AdminDemo() {
   const handleSendMessage = () => {
     if (newChatMessage.trim()) {
       setChatMessages([...chatMessages, { id: chatMessages.length + 1, user: 'ADMIN', message: newChatMessage, time: new Date().toLocaleTimeString() }]);
+      setLogs([{ id: logs.length + 1, action: `Сообщение: ${newChatMessage}`, user: 'ADMIN', time: new Date().toLocaleTimeString(), type: 'chat' }, ...logs]);
       setNewChatMessage('');
     }
+  };
+
+  const handleRestartServer = () => {
+    setIsRestarting(true);
+    alert('Сервер перезапускается...');
+    setTimeout(() => {
+      setIsRestarting(false);
+      setLogs([{ id: logs.length + 1, action: 'Сервер перезапущен', user: 'ADMIN', time: new Date().toLocaleTimeString(), type: 'restart' }, ...logs]);
+    }, 2000);
+  };
+
+  const handleChangeMap = () => {
+    setServerStats({...serverStats, map: selectedMap});
+    setLogs([{ id: logs.length + 1, action: `Карта изменена на ${selectedMap}`, user: 'ADMIN', time: new Date().toLocaleTimeString(), type: 'mapchange' }, ...logs]);
+    alert(`Карта изменена на ${selectedMap}`);
+  };
+
+  const handleClearChat = () => {
+    setChatMessages([]);
+    setLogs([{ id: logs.length + 1, action: 'Чат очищен', user: 'ADMIN', time: new Date().toLocaleTimeString(), type: 'chatclear' }, ...logs]);
+    alert('Чат очищен');
+  };
+
+  const handleSaveWorld = () => {
+    setLogs([{ id: logs.length + 1, action: 'Мир сохранен', user: 'ADMIN', time: new Date().toLocaleTimeString(), type: 'save' }, ...logs]);
+    alert('Мир сохранен');
   };
 
   const renderDashboard = () => (
@@ -113,10 +142,12 @@ export default function AdminDemo() {
       </div>
 
       <div className="quick-actions">
-        <button className="btn">Перезапустить сервер 🔁</button>
-        <button className="btn btn-secondary">Очистить чат 🧹</button>
-        <button className="btn btn-secondary">Сохранить мир 💾</button>
-        <button className="btn btn-secondary">Изменить карту 🗺️</button>
+        <button className="btn" onClick={handleRestartServer} disabled={isRestarting}>
+          {isRestarting ? 'Перезапуск...' : 'Перезапустить сервер 🔁'}
+        </button>
+        <button className="btn btn-secondary" onClick={handleClearChat}>Очистить чат 🧹</button>
+        <button className="btn btn-secondary" onClick={handleSaveWorld}>Сохранить мир 💾</button>
+        <button className="btn btn-secondary" onClick={handleChangeMap}>Изменить карту 🗺️</button>
       </div>
 
       <div className="dashboard-grid">
@@ -341,6 +372,38 @@ export default function AdminDemo() {
     </div>
   );
 
+  const renderMap = () => (
+    <div className="map-panel">
+      <h2>Управление картами 🗺️</h2>
+      
+      <div className="map-controls">
+        <div className="map-selector">
+          <label>Выберите карту:</label>
+          <select value={selectedMap} onChange={(e) => setSelectedMap(e.target.value)}>
+            <option value="gm_construct">gm_construct</option>
+            <option value="deathrun_minecraft">deathrun_minecraft</option>
+            <option value="gm_flatgrass">gm_flatgrass</option>
+            <option value="deathrun_tesv_skyrim">deathrun_tesv_skyrim</option>
+            <option value="gm_bigcity">gm_bigcity</option>
+          </select>
+          <button className="btn" onClick={handleChangeMap}>Изменить карту</button>
+        </div>
+        
+        <div className="map-preview">
+          <div className="map-image">
+            <div className="map-placeholder">Карта: {selectedMap}</div>
+          </div>
+          <div className="map-info">
+            <h3>{selectedMap}</h3>
+            <p>Тип: Deathrun</p>
+            <p>Игроков: 32</p>
+            <p>Время прохождения: 15-25 мин</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <Head>
@@ -396,6 +459,7 @@ export default function AdminDemo() {
             padding: 5px;
             border-radius: 10px;
             overflow-x: auto;
+            flex-wrap: wrap;
           }
           .tab {
             padding: 14px 24px;
@@ -416,7 +480,7 @@ export default function AdminDemo() {
           }
           .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
           }
@@ -486,6 +550,11 @@ export default function AdminDemo() {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0,170,255,0.4);
           }
+          .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+          }
           .btn-secondary {
             background: rgba(255,255,255,0.1);
           }
@@ -553,6 +622,8 @@ export default function AdminDemo() {
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
           }
           .search-bar input, .log-filters select {
             padding: 10px 15px;
@@ -560,7 +631,8 @@ export default function AdminDemo() {
             background: rgba(30,30,40,0.8);
             border: 1px solid var(--border);
             color: white;
-            width: 250px;
+            width: 100%;
+            max-width: 250px;
           }
           .recent-activity {
             background: var(--card);
@@ -579,6 +651,7 @@ export default function AdminDemo() {
             padding: 10px;
             background: rgba(30,30,40,0.5);
             border-radius: 6px;
+            flex-wrap: wrap;
           }
           .time {
             color: #aaa;
@@ -603,11 +676,15 @@ export default function AdminDemo() {
           .log-type.unban { background: rgba(0,200,200,0.2); color: #00cccc; }
           .log-type.kick { background: rgba(255,170,0,0.2); color: var(--warning); }
           .log-type.chat { background: rgba(0,170,255,0.2); color: var(--primary); }
+          .log-type.restart { background: rgba(150,0,200,0.2); color: #aa00ff; }
+          .log-type.mapchange { background: rgba(255,150,0,0.2); color: #ff9900; }
+          .log-type.save { background: rgba(0,200,150,0.2); color: #00cc99; }
           .action-group {
             display: flex;
             gap: 5px;
             margin-bottom: 5px;
             align-items: center;
+            flex-wrap: wrap;
           }
           .reason-input, .duration-select {
             padding: 6px 10px;
@@ -616,9 +693,11 @@ export default function AdminDemo() {
             border: 1px solid var(--border);
             color: white;
             font-size: 0.8rem;
+            min-width: 120px;
           }
           .reason-input {
-            width: 150px;
+            flex: 1;
+            min-width: 150px;
           }
           .dashboard-grid {
             display: grid;
@@ -654,6 +733,7 @@ export default function AdminDemo() {
           .chat-input {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
           }
           .chat-input input {
             flex: 1;
@@ -662,8 +742,9 @@ export default function AdminDemo() {
             background: rgba(30,30,40,0.8);
             border: 1px solid var(--border);
             color: white;
+            min-width: 200px;
           }
-          .settings-panel {
+          .settings-panel, .map-panel {
             background: var(--card);
             border-radius: 12px;
             padding: 20px;
@@ -683,6 +764,7 @@ export default function AdminDemo() {
             gap: 15px;
             margin-bottom: 15px;
             align-items: center;
+            flex-wrap: wrap;
           }
           .setting-item label {
             min-width: 150px;
@@ -694,6 +776,7 @@ export default function AdminDemo() {
             border: 1px solid var(--border);
             color: white;
             flex: 1;
+            min-width: 200px;
           }
           textarea {
             height: 100px;
@@ -711,6 +794,108 @@ export default function AdminDemo() {
             font-family: monospace;
             font-size: 0.9rem;
           }
+          .map-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+          }
+          .map-selector {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+          }
+          .map-selector label {
+            font-weight: 600;
+          }
+          .map-selector select {
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(30,30,40,0.8);
+            border: 1px solid var(--border);
+            color: white;
+          }
+          .map-preview {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+          }
+          .map-image {
+            flex: 1;
+            min-width: 200px;
+          }
+          .map-placeholder {
+            width: 100%;
+            height: 150px;
+            background: rgba(30,30,40,0.5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #aaa;
+          }
+          .map-info {
+            flex: 1;
+            min-width: 200px;
+          }
+
+          /* Мобильная адаптация */
+          @media (max-width: 768px) {
+            .header {
+              flex-direction: column;
+              gap: 15px;
+              text-align: center;
+            }
+            .tabs {
+              justify-content: center;
+            }
+            .tab {
+              padding: 10px 15px;
+              font-size: 0.9rem;
+            }
+            .stats-grid {
+              grid-template-columns: 1fr;
+            }
+            .quick-actions {
+              flex-direction: column;
+            }
+            .btn {
+              width: 100%;
+              justify-content: center;
+            }
+            .dashboard-grid {
+              grid-template-columns: 1fr;
+            }
+            .action-group {
+              flex-direction: column;
+              align-items: flex-start;
+            }
+            .reason-input {
+              width: 100%;
+            }
+            .chat-input input {
+              min-width: 150px;
+            }
+            .setting-item {
+              flex-direction: column;
+              align-items: flex-start;
+            }
+            .setting-item label {
+              margin-bottom: 5px;
+            }
+            .setting-item input, .setting-item select {
+              width: 100%;
+            }
+            .map-selector {
+              flex-direction: column;
+              align-items: flex-start;
+            }
+            .map-preview {
+              flex-direction: column;
+            }
+          }
         `}</style>
       </Head>
 
@@ -726,7 +911,7 @@ export default function AdminDemo() {
           <button className={`tab ${activeTab === 'bans' ? 'active' : ''}`} onClick={() => setActiveTab('bans')}>Блокировки 🔒</button>
           <button className={`tab ${activeTab === 'logs' ? 'active' : ''}`} onClick={() => setActiveTab('logs')}>Логи 📋</button>
           <button className={`tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>Настройки ⚙️</button>
-          <button className="tab">Карта 🗺️</button>
+          <button className={`tab ${activeTab === 'map' ? 'active' : ''}`} onClick={() => setActiveTab('map')}>Карта 🗺️</button>
           <button className="tab">Чат 💬</button>
         </div>
 
@@ -736,6 +921,7 @@ export default function AdminDemo() {
           {activeTab === 'bans' && renderBans()}
           {activeTab === 'logs' && renderLogs()}
           {activeTab === 'settings' && renderSettings()}
+          {activeTab === 'map' && renderMap()}
         </div>
       </div>
     </>
