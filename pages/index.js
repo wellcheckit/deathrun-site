@@ -1,53 +1,75 @@
-// pages/index.js
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white font-sans flex flex-col items-center justify-center px-4">
-      {/* Логотип / Название */}
-      <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-        <span className="text-red-500">D</span>EATH
-        <span className="text-red-500">R</span>UN
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#000',
+      color: '#fff',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem',
+      position: 'relative'
+    }}>
+      <h1 style={{
+        fontSize: '2.5rem',
+        fontWeight: 'bold',
+        marginBottom: '1rem',
+        textAlign: 'center'
+      }}>
+        <span style={{ color: '#ff2a2a' }}>D</span>EATH
+        <span style={{ color: '#ff2a2a' }}>R</span>UN
       </h1>
 
-      {/* Описание */}
-      <p className="text-gray-400 text-lg mb-8 max-w-md text-center">
+      <p style={{
+        color: '#aaa',
+        fontSize: '1.125rem',
+        marginBottom: '2rem',
+        maxWidth: '32rem',
+        textAlign: 'center'
+      }}>
         Беги. Умирай. Повторяй.
       </p>
 
-      {/* IP-адрес */}
-      <div className="mb-10 text-center">
-        <p className="text-gray-500 text-sm">ПОДКЛЮЧИСЬ</p>
-        <p className="text-white text-xl md:text-2xl font-mono bg-gray-900 px-4 py-2 rounded inline-block">
-          dr.yourserver.com:27015
-        </p>
-      </div>
+      <p style={{
+        fontSize: '1.1rem',
+        fontFamily: 'monospace',
+        backgroundColor: '#111',
+        padding: '0.5rem 1rem',
+        borderRadius: '4px',
+        marginBottom: '2rem'
+      }}>
+        dr.yourserver.com:27015
+      </p>
 
-      {/* Кнопка */}
       <a
         href="steam://connect/dr.yourserver.com:27015"
-        className="group relative px-8 py-4 bg-red-600 hover:bg-red-700 transition-all duration-300 rounded-md text-lg font-bold uppercase tracking-wider overflow-hidden"
+        style={{
+          display: 'inline-block',
+          padding: '0.75rem 2rem',
+          backgroundColor: '#ff2a2a',
+          color: '#fff',
+          textDecoration: 'none',
+          borderRadius: '4px',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          fontSize: '1rem'
+        }}
       >
-        <span className="relative z-10">Играть</span>
-        {/* Эффект подсветки при наведении */}
-        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+        Играть
       </a>
 
-      {/* Discord */}
-      <div className="mt-12 text-center">
-        <p className="text-gray-600 text-sm mb-2">Или присоединяйся в Discord</p>
+      <div style={{ marginTop: '3rem', textAlign: 'center' }}>
         <a
           href="https://discord.gg/YOUR_INVITE"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-400 hover:text-white transition-colors underline"
+          style={{ color: '#888', textDecoration: 'underline', fontSize: '0.9rem' }}
         >
-          discord.gg/yourserver
+          Присоединиться в Discord
         </a>
       </div>
-
-      {/* Футер (очень минималистичный) */}
-      <footer className="absolute bottom-4 text-gray-800 text-xs">
-        etochto • 2025
-      </footer>
     </div>
   );
 }
