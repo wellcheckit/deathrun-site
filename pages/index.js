@@ -40,6 +40,7 @@ export default function AdminDemo() {
   const [selectedMap, setSelectedMap] = useState('gm_construct');
   const [isRestarting, setIsRestarting] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contentTransition, setContentTransition] = useState('fade-in');
 
   // Симуляция обновления данных
   useEffect(() => {
@@ -52,6 +53,15 @@ export default function AdminDemo() {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleTabChange = (tab) => {
+    setContentTransition('fade-out');
+    setTimeout(() => {
+      setActiveTab(tab);
+      setMobileMenuOpen(false);
+      setContentTransition('fade-in');
+    }, 150);
+  };
 
   const handleKick = (id) => {
     const player = players.find(p => p.id === id);
@@ -409,6 +419,7 @@ export default function AdminDemo() {
             max-width: 100%;
             margin: 0 auto;
             padding: 15px;
+            position: relative;
           }
           .header {
             display: flex;
@@ -419,6 +430,8 @@ export default function AdminDemo() {
             border-radius: 12px;
             margin-bottom: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 100;
           }
           .logo {
             font-size: 1.4rem;
@@ -428,28 +441,30 @@ export default function AdminDemo() {
             -webkit-text-fill-color: transparent;
           }
           .menu-toggle {
-            display: none;
+            display: block;
             background: none;
             border: none;
             color: white;
             font-size: 1.5rem;
             cursor: pointer;
+            z-index: 101;
           }
           .tabs {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.9);
-            z-index: 1000;
+            z-index: 999;
             flex-direction: column;
             padding: 20px;
             overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
           }
           .tabs.open {
-            display: flex;
+            transform: translateX(0);
           }
           .tab-mobile {
             padding: 20px;
@@ -461,6 +476,10 @@ export default function AdminDemo() {
             margin-bottom: 10px;
             text-align: left;
             font-size: 1.2rem;
+            transition: all 0.2s ease;
+          }
+          .tab-mobile:hover {
+            background: rgba(50,50,70,0.8);
           }
           .stats-grid {
             display: grid;
@@ -474,11 +493,17 @@ export default function AdminDemo() {
             border-radius: 12px;
             text-align: center;
             border: 1px solid var(--border);
-            transition: transform 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.5s ease;
+          }
+          .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
           }
           .stat-icon {
             font-size: 2rem;
             margin-bottom: 10px;
+            animation: pulse 2s infinite;
           }
           .number {
             font-size: 1.8rem;
@@ -500,7 +525,7 @@ export default function AdminDemo() {
             height: 100%;
             background: var(--primary);
             border-radius: 3px;
-            transition: width 0.5s;
+            transition: width 0.5s ease;
           }
           .quick-actions {
             display: flex;
@@ -516,7 +541,7 @@ export default function AdminDemo() {
             color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -551,6 +576,7 @@ export default function AdminDemo() {
             border-radius: 12px;
             padding: 15px;
             border: 1px solid var(--border);
+            animation: fadeIn 0.5s ease;
           }
           .chat-container {
             height: 150px;
@@ -563,6 +589,7 @@ export default function AdminDemo() {
           .chat-message {
             margin-bottom: 8px;
             font-size: 0.9rem;
+            animation: slideIn 0.3s ease;
           }
           .chat-user {
             color: var(--primary);
@@ -598,6 +625,7 @@ export default function AdminDemo() {
             background: rgba(30,30,40,0.5);
             border-radius: 6px;
             flex-wrap: wrap;
+            animation: fadeIn 0.3s ease;
           }
           .time {
             color: #aaa;
@@ -750,6 +778,11 @@ export default function AdminDemo() {
             border-radius: 10px;
             padding: 15px;
             border: 1px solid var(--border);
+            animation: slideIn 0.3s ease;
+            transition: transform 0.2s ease;
+          }
+          .player-card:hover, .ban-card:hover, .log-card:hover {
+            transform: translateX(5px);
           }
           .player-header {
             display: flex;
@@ -783,9 +816,9 @@ export default function AdminDemo() {
           }
           .player-details {
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 5px;
             margin-bottom: 10px;
-            flex-wrap: wrap;
             font-size: 0.9rem;
             color: #aaa;
           }
@@ -850,13 +883,53 @@ export default function AdminDemo() {
             font-size: 0.9rem;
           }
 
+          /* Анимации */
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+          }
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateX(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+          @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+          }
+          .fade-in {
+            animation: fadeIn 0.3s ease;
+          }
+          .fade-out {
+            animation: fadeOut 0.15s ease forwards;
+          }
+
           /* Мобильная адаптация */
           @media (min-width: 768px) {
             .menu-toggle {
-              display: block;
+              display: none;
             }
             .tabs {
-              display: flex !important;
               position: static;
               height: auto;
               width: auto;
@@ -866,12 +939,19 @@ export default function AdminDemo() {
               border-radius: 10px;
               background: rgba(30,30,40,0.8);
               flex-wrap: wrap;
+              transform: none !important;
+              display: flex !important;
+              overflow-y: visible;
             }
             .tab-mobile {
-              display: none;
+              display: inline-block;
+              background: transparent;
+              padding: 14px 24px;
+              border-radius: 8px;
+              margin: 0 5px;
             }
-            .tabs.open {
-              display: none;
+            .tab-mobile:hover {
+              background: rgba(100,100,150,0.3);
             }
             .stat-card {
               padding: 25px;
@@ -917,16 +997,16 @@ export default function AdminDemo() {
         </div>
 
         <div className={`tabs ${mobileMenuOpen ? 'open' : ''}`}>
-          <button className="tab-mobile" onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }}>🏠 Главная</button>
-          <button className="tab-mobile" onClick={() => { setActiveTab('players'); setMobileMenuOpen(false); }}>👥 Игроки</button>
-          <button className="tab-mobile" onClick={() => { setActiveTab('bans'); setMobileMenuOpen(false); }}>🔒 Блокировки</button>
-          <button className="tab-mobile" onClick={() => { setActiveTab('logs'); setMobileMenuOpen(false); }}>📋 Логи</button>
-          <button className="tab-mobile" onClick={() => { setActiveTab('settings'); setMobileMenuOpen(false); }}>⚙️ Настройки</button>
-          <button className="tab-mobile" onClick={() => { setActiveTab('map'); setMobileMenuOpen(false); }}>🗺️ Карта</button>
-          <button className="tab-mobile">💬 Чат</button>
+          <button className="tab-mobile" onClick={() => handleTabChange('dashboard')}>🏠 Главная</button>
+          <button className="tab-mobile" onClick={() => handleTabChange('players')}>👥 Игроки</button>
+          <button className="tab-mobile" onClick={() => handleTabChange('bans')}>🔒 Блокировки</button>
+          <button className="tab-mobile" onClick={() => handleTabChange('logs')}>📋 Логи</button>
+          <button className="tab-mobile" onClick={() => handleTabChange('settings')}>⚙️ Настройки</button>
+          <button className="tab-mobile" onClick={() => handleTabChange('map')}>🗺️ Карта</button>
+          <button className="tab-mobile" onClick={() => handleTabChange('chat')}>💬 Чат</button>
         </div>
 
-        <div className="content">
+        <div className={`content ${contentTransition}`}>
           {activeTab === 'dashboard' && renderDashboard()}
           {activeTab === 'players' && renderPlayers()}
           {activeTab === 'bans' && renderBans()}
